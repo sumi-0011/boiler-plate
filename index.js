@@ -3,21 +3,20 @@ const app = express();
 const port = 5000;
 const bodyParser = require("body-parser");
 const { User } = require("./models/User");
+const config = require("./config/key");
 
 //applications/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extension: true }));
 
 //applications/json 타입으로 된 것을 분석해서 가져올 수 있게
 app.use(bodyParser.json());
+
 const mongoose = require("mongoose");
 mongoose
-  .connect(
-    "mongodb+srv://sumi-0011:nemo0408@boiler-plate.tsurp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
+  .connect(config.mongoURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("Mongoose Connect...."))
   .catch((err) => console.log(err));
 

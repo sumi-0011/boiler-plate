@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const config = require("./config/key");
+const { auth } = require("./middleware/auth");
 const { User } = require("./models/User");
 
 // application/x-www-form-urlencoded
@@ -70,6 +71,25 @@ app.post("/api/users/login", (req, res) => {
     });
   });
 });
+//auth 라는 미들웨어를 추가
+app.get("/api/users/auth", auth, (req, res) => {
+  //엔드포인트에서 get을 받은 후에 콜백function하기 전에 중간에서 무언가를 해주는 것
+
+  /*
+  role 1 어드민, role 2 특정 부서 어드민
+  role 0 -> 일반유저 role 0 이아니면 관리자
+  */
+  //여기까지 미들웨어를 통과해 왔다는 이야기는 Authentication이 true이다
+  res.status(200).json({
+    _id: req.user._id,
+    isAdmin: req.user.role === 0 ? false : true,
+    email: req.user.email,
+    lastname: req.user.lastname,
+    role: req.user.role,
+    image: req.user.image,
+  });
+});
+
 const port = 5000;
 
 app.listen(port, () => {

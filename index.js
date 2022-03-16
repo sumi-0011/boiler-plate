@@ -90,6 +90,22 @@ app.get("/api/users/auth", auth, (req, res) => {
   });
 });
 
+app.get("/api/users/logout", auth, (req, res) => {
+  //로그아웃 하려는 유저를 데이터베이스에서 찾아서
+  User.findOneAndUpdate(
+    {
+      _id: req.user._id, //로그아웃 하려는 유저를 미들웨어에서 찾아줌
+    },
+    {
+      token: "", //토큰을 지워준다.
+    },
+    (err, user) => {
+      if (err) return res.json({ success: false, err });
+      return res.status(200).send({ success: true });
+    }
+  );
+});
+
 const port = 5000;
 
 app.listen(port, () => {
